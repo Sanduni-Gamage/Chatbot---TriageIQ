@@ -3,7 +3,7 @@
   routing accuracy | routing macro-F1 | severity accuracy | coverage accuracy
   grounding rate (hallucination guard) | avg rationale score | avg latency | est. cost
 
-Writes a markdown results table to eval/report.md — the artifact to show in interviews.
+Writes a markdown results table to eval/report.md.
 
 Run:  python eval/run_eval.py --variants baseline,frugal,strict
 """

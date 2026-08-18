@@ -1,21 +1,9 @@
-"""Generate a labeled claims dataset for evaluation (100 varied claims).
+"""Builds data/claims.jsonl — 100 labeled claims, 25 per queue, no randomness.
 
-Design: a procedural generator with an independent *oracle*.
+The oracle labels them without importing src/triageiq, so if the system's logic
+drifts we see a disagreement instead of silent agreement.
 
-* The generator enumerates realistic claims across policies, loss types, dollar bands, reporting
-  lags and evidence variants.
-* The oracle assigns gold labels (queue / severity / covered) by re-stating the business rules
-  and reading coverage straight from ``policies.json``. It deliberately does NOT import the
-  system under test (``src/triageiq``), so gold labels are an independent ground truth: if the
-  system's logic ever drifts from the rules, the eval will surface the disagreement instead of
-  hiding it.
-
-The set is balanced (~25 per routing queue) and deterministic (no randomness), so results are
-reproducible. It spans all four queues, all severity bands, covered/not-covered outcomes
-(lapsed policy, building-only exclusions, wrong loss type, unlisted peril) and every combination
-of the three fraud signals — including not-covered claims escalated to SIU on fraud risk.
-
-Run:  python data/generate_data.py   ->   writes data/claims.jsonl
+Run: python data/generate_data.py
 """
 
 from __future__ import annotations
@@ -33,16 +21,12 @@ RULES_PATH = HERE / "fraud_rules.json"
 PER_QUEUE = 25  # -> 100 claims total
 
 # --------------------------------------------------------------------------- independent oracle
-# The oracle reads the same reference DATA as the system (policy wording, fraud thresholds and
-# phrase lists) but implements the decision LOGIC independently. Sharing tuned parameters keeps
-# the two from drifting on vocabulary, while the separate implementation still catches a genuine
-# logic regression in src/triageiq.
+# Same reference data as the system, but our own logic — so drift shows up.
 _POLICIES = {p["policy_id"]: p for p in json.loads(POLICIES_PATH.read_text("utf-8"))}
 _RULES = json.loads(RULES_PATH.read_text("utf-8"))
 
 THEFT_FAMILY = set(_RULES["theft_loss_types"])
 SEVERITY_ESCALATORS = {"home_fire", "motor_theft"}
-_FORCED_ENTRY_EVIDENCE = tuple(_RULES["forced_entry_evidence"])
 _NO_FORCED_ENTRY = tuple(_RULES["no_forced_entry"])
 _LATE_DAYS = _RULES["late_reporting_days"]
 _ROUND_MIN = _RULES["round_amount_minimum"]
@@ -76,7 +60,7 @@ def _fraud_risk(loss_type: str, amount: float, inc: str, rep: str, text: str) ->
         signals += 1
     if amount >= _ROUND_MIN and amount % _ROUND_MULT == 0:
         signals += 1
-    # Negation is tested first: "no forced entry" contains "forced entry" as a substring.
+    # Negation first — "no forced entry" contains "forced entry".
     low = text.lower()
     if loss_type in THEFT_FAMILY and any(p in low for p in _NO_FORCED_ENTRY):
         signals += 1
@@ -129,8 +113,9 @@ DESC = {
                   "Electrical fire damaged the property.", "Fire caused extensive smoke damage."],
     "home_storm": ["Storm damaged the roof.", "Storm blew down fencing and guttering.",
                    "Wind damage to the building exterior.", "Storm tore roofing from the house."],
-    "home_burglary": ["Contents stolen in a break-in.", "Burglary with electronics taken.",
-                      "Break-in, several items stolen.", "Jewellery stolen from the home."],
+    # Stays neutral about entry — _text() adds that bit.
+    "home_burglary": ["Contents stolen from the home.", "Electronics taken from the property.",
+                      "Several items stolen overnight.", "Jewellery missing from the bedroom."],
     "water_damage": ["Water damage from flooding.", "Rainwater entered the property.",
                      "Flood damage to the ground floor.", "Storm flooding damaged contents."],
     "other": ["Accidental damage to personal property.", "Damage attributed to ground movement.",
@@ -144,37 +129,43 @@ STMT = [
 ]
 
 
-def _text(loss_type: str, evidence: bool, idx: int) -> tuple[str, str]:
+ENTRY_EVIDENCE = {
+    "home_burglary": " The door lock was broken and it was reported to police.",
+    "motor_theft": " The driver's window was smashed and it was reported to police.",
+}
+NO_ENTRY_EVIDENCE = " No sign of forced entry and no witnesses."
+
+
+def _text(loss_type: str, has_entry_evidence: bool, idx: int) -> tuple[str, str]:
+    """Build the claim text; theft claims get an entry-method line."""
     pool = DESC[loss_type]
     desc = pool[idx % len(pool)]
     if loss_type in THEFT_FAMILY:
-        desc += " No sign of forced entry and no witnesses." if evidence \
-            else " Forced entry was evident and it was reported to police."
+        desc += ENTRY_EVIDENCE.get(loss_type, "") if has_entry_evidence else NO_ENTRY_EVIDENCE
     stmt = STMT[idx % len(STMT)]
     return desc, stmt
 
 
 # --------------------------------------------------------------------------- build & balance
 def _candidates() -> list[dict]:
-    """Enumerate deterministic candidates, ordered so pair varies fastest (maximises variety
-    within each queue bucket after even-spaced sampling)."""
+    """All candidate claims, ordered so the policy/loss pair varies fastest."""
     seen = set()
     out = []
     counter = 0
     for amount in AMOUNTS:
         for lag in LAGS:
             for policy_id, loss_type in PAIRS:
-                evidences = [False, True] if loss_type in THEFT_FAMILY else [False]
-                for evidence in evidences:
+                variants = [True, False] if loss_type in THEFT_FAMILY else [True]
+                for has_entry_evidence in variants:
                     inc, rep = lag
-                    desc, stmt = _text(loss_type, evidence, counter)
+                    desc, stmt = _text(loss_type, has_entry_evidence, counter)
                     counter += 1
                     text = desc + " " + stmt
                     covered = _covered(policy_id, loss_type)
                     severity = _severity(loss_type, amount)
                     fraud = _fraud_risk(loss_type, amount, inc, rep, text)
                     queue = _route(covered, severity, fraud)
-                    key = (policy_id, loss_type, amount, inc, rep, evidence)
+                    key = (policy_id, loss_type, amount, inc, rep, has_entry_evidence)
                     if key in seen:
                         continue
                     seen.add(key)

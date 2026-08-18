@@ -1,7 +1,6 @@
 # Reusable agentic patterns (learnings)
 
-Patterns captured while building TriageIQ. These generalise beyond claims triage — they're the
-"reusable patterns and best practices" an AI Forward Deployed team lives on.
+Patterns captured while building TriageIQ. They generalise well beyond claims triage.
 
 ### 1. Structured output as a contract, not a hope
 Define the agent's output as a typed schema (Pydantic) and make the terminal action a

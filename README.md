@@ -5,8 +5,7 @@
 > right queue — with a rationale grounded in citations. Ships with a full **evaluation harness**
 > that measures accuracy, grounding, latency and cost across prompt/model variants.
 
-Built as a working demonstration of the skills in IAG's **Agentic Discovery Analyst** role:
-turning an ambiguous business problem into a validated, measurable agentic prototype.
+Turning an ambiguous business problem into a validated, measurable agentic prototype.
 
 ---
 
@@ -18,16 +17,14 @@ exactly the kind of high-volume, judgement-heavy workflow where an agentic syste
 cycle time and delivery risk — **if** you can prove it's reliable. This project builds the agent
 *and* the evidence.
 
-It deliberately mirrors the job's "What You'll Do":
-
-| Job responsibility | Where it lives in this repo |
+| Capability | Where it lives in this repo |
 |---|---|
 | Building and running AI/agentic prototypes | `src/triageiq/agent.py` |
-| Designing workflows combining LLMs, tools & enterprise knowledge | `src/triageiq/tools.py`, `src/triageiq/knowledge.py` |
+| Combining LLMs, tools & enterprise knowledge | `src/triageiq/tools.py`, `src/triageiq/knowledge.py` |
 | Experimenting with models, prompts and architectures | `src/triageiq/prompts.py`, `eval/run_eval.py` (variant sweep) |
 | Evaluating performance, reliability & quality | `eval/` (metrics, LLM-as-judge, grounding checks) |
-| Capturing learnings, reusable patterns and best practices | `docs/PATTERNS.md` |
-| Helping shape solutions before production | `docs/ARCHITECTURE.md`, `docs/IAG_ALIGNMENT.md` |
+| Capturing reusable patterns and best practices | `docs/PATTERNS.md` |
+| Planning the path to production | `docs/ARCHITECTURE.md` |
 
 ---
 
@@ -65,7 +62,7 @@ python data/generate_data.py
 python eval/run_eval.py --variants baseline,frugal,strict
 ```
 
-This prints a results table and writes `eval/report.md` — the artifact you show in interviews.
+This prints a results table and writes `eval/report.md`.
 
 Run the test suite (unit + metamorphic/property tests — all free, no key needed):
 
@@ -101,7 +98,7 @@ tier**, so it costs nothing to run live:
 | Provider | Key | Default model | Get a key |
 |---|---|---|---|
 | `anthropic` | `ANTHROPIC_API_KEY` | `claude-sonnet-5` | console.anthropic.com |
-| `gemini` | `GEMINI_API_KEY` | `gemini-2.5-flash` | aistudio.google.com (free tier) |
+| `gemini` | `GEMINI_API_KEY` | `gemini-3.6-flash` | aistudio.google.com (free tier) |
 
 ```bash
 pip install google-genai            # only needed for the Gemini backend
@@ -134,8 +131,7 @@ frontend/       React + Vite chat UI (source)
 web/dist/       built UI assets, emitted by `npm run build` (not committed)
 data/           synthetic policy wordings + labeled claim dataset generator (100 claims)
 eval/           metrics, LLM-as-judge, grounding check, variant runner, report
-docs/           ARCHITECTURE, PATTERNS, IAG_ALIGNMENT
-cv/             CV bullet points + cover-letter paragraph you can lift straight in
+docs/           ARCHITECTURE, PATTERNS, TESTING
 tests/          unit tests + metamorphic/property tests
 ```
 
