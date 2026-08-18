@@ -149,5 +149,4 @@ tests/          unit tests + metamorphic/property tests
    `eval/report.md`.
 4. **Runs for free.** Mock mode keeps the whole thing demoable and CI-friendly without spend.
 
-See [`docs/IAG_ALIGNMENT.md`](docs/IAG_ALIGNMENT.md) for how each piece maps to the role, and
-[`docs/TESTING.md`](docs/TESTING.md) for a full manual + automated test checklist.
+See [`docs/TESTING.md`](docs/TESTING.md) for a full manual and automated test checklist.
