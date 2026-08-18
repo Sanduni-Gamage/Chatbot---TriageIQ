@@ -37,7 +37,7 @@ FNOL claim ─▶ Triage Agent (Claude + tool loop)
                  ├─ assess_severity(claim)            → severity band + drivers
                  ├─ detect_fraud_signals(claim)       → rule + LLM hybrid risk flags
                  └─ route_claim(...)                  → FAST_TRACK | STANDARD | INVESTIGATE | SIU
-              ─▶ Structured TriageDecision (validated JSON) + human-readable rationale
+              ─▶ Structured TriageDecision (validated JSON) + rationale
 ```
 
 ## Quickstart
