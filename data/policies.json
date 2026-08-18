@@ -1,0 +1,48 @@
+[
+  {
+    "policy_id": "MOT-100234",
+    "product": "Comprehensive Motor",
+    "holder": "A. Rangi",
+    "status": "active",
+    "excess": 750,
+    "clauses": [
+      {"id": "MOT-C1", "covers": ["motor_collision"], "text": "We cover accidental loss or damage to your vehicle caused by collision, impact or overturning."},
+      {"id": "MOT-C2", "covers": ["motor_theft"], "text": "We cover loss of your vehicle by theft or attempted theft, provided reasonable security precautions were taken."},
+      {"id": "MOT-X1", "covers": [], "text": "We do not cover loss or damage while the vehicle is driven by an unlicensed driver or a driver under the influence."}
+    ]
+  },
+  {
+    "policy_id": "HOM-205678",
+    "product": "Home & Contents",
+    "holder": "M. Patel",
+    "status": "active",
+    "excess": 500,
+    "clauses": [
+      {"id": "HOM-C1", "covers": ["home_fire"], "text": "We cover loss or damage to your home and contents caused by fire, explosion or smoke."},
+      {"id": "HOM-C2", "covers": ["home_storm", "water_damage"], "text": "We cover loss or damage caused by storm, rainwater or flash flooding entering the building."},
+      {"id": "HOM-C3", "covers": ["home_burglary"], "text": "We cover loss of contents by burglary where there is visible evidence of forced entry."},
+      {"id": "HOM-X1", "covers": [], "text": "We do not cover damage caused by a lack of maintenance, wear and tear, or gradual deterioration."}
+    ]
+  },
+  {
+    "policy_id": "HOM-205679",
+    "product": "Home (building only)",
+    "holder": "T. Nguyen",
+    "status": "active",
+    "excess": 500,
+    "clauses": [
+      {"id": "HB-C1", "covers": ["home_fire", "home_storm"], "text": "We cover accidental loss or damage to the building caused by fire or storm."},
+      {"id": "HB-X1", "covers": [], "text": "This policy covers the building only. Contents, including stolen items, are not covered."}
+    ]
+  },
+  {
+    "policy_id": "MOT-100999",
+    "product": "Third Party Property",
+    "holder": "S. Wiremu",
+    "status": "lapsed",
+    "excess": 400,
+    "clauses": [
+      {"id": "TP-C1", "covers": [], "text": "We cover your legal liability for damage your vehicle causes to other people's property. Damage to your own vehicle is not covered."}
+    ]
+  }
+]

@@ -1,0 +1,31 @@
+{
+  "_comment": "Tunable fraud-detection parameters. Editable by claims/business users without a code change. Both the agent's tools and the evaluation oracle read this file, exactly as they both read policies.json — shared reference data, independently implemented logic.",
+
+  "late_reporting_days": 30,
+  "_late_reporting_days": "Reporting a loss more than this many days after the incident is treated as an indicator.",
+
+  "round_amount_minimum": 1000,
+  "round_amount_multiple": 1000,
+  "_round_amount": "Estimates at or above the minimum that are an exact multiple are treated as an indicator; precise figures suggest a real quote, round ones an estimate.",
+
+  "theft_loss_types": ["motor_theft", "home_burglary"],
+  "_theft_loss_types": "Only these loss types are assessed for forced-entry evidence.",
+
+  "forced_entry_evidence": [
+    "forced entry", "forced the", "forced open", "broke in", "break-in", "break in",
+    "broken lock", "lock was broken", "lock broken", "broken window", "window was broken",
+    "smashed", "shattered", "pried", "prised", "jemmied", "jimmied", "kicked in",
+    "cut the lock", "bolt cutter", "damaged door", "door was damaged", "hotwired",
+    "broken door", "door was broken", "glass broken", "broken glass", "forced lock",
+    "tampered", "crowbar", "levered"
+  ],
+  "_forced_entry_evidence": "Phrases showing a claimant DESCRIBED forced entry. Claimants report what they saw ('the door lock was broken'), never the absence of something.",
+
+  "no_forced_entry": [
+    "no forced entry", "no sign of forced", "no sign of a break", "no sign of break",
+    "no signs of forced", "no visible entry", "nothing was forced", "no damage to the door",
+    "no damage to the lock", "no evidence of entry", "no sign of entry",
+    "no signs of entry", "without forced entry", "no break-in"
+  ],
+  "_no_forced_entry": "Phrases explicitly stating entry showed no force. Checked BEFORE the evidence list, because 'no forced entry' contains 'forced entry' as a substring."
+}

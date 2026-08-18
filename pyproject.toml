@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "triageiq"
+version = "0.1.0"
+description = "Agentic claims triage & coverage assistant with an evaluation harness"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "anthropic>=0.39.0",
+    "pydantic>=2.6",
+    "python-dotenv>=1.0",
+    "rich>=13.7",
+    "fastapi>=0.110",
+    "uvicorn>=0.29",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+gemini = ["google-genai>=1.0"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.scripts]
+triageiq = "triageiq.agent:main"
